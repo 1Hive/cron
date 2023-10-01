@@ -10,7 +10,8 @@
     "paths": {
       "@/components/*": ["components/*"],
       "@/lib/*": ["lib/*"],
-      "~/*": ["./*"]
+      "~/*": ["./*"],
+      "@/abi/*": ["constants/abi/*"],
     },
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,

@@ -1,0 +1,1 @@
+export default ["function sync()", "function testFunction()"]

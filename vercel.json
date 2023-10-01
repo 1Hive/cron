@@ -2,8 +2,12 @@
   "buildCommand": "pnpm turbo build",
   "crons": [
     {
-      "path": "/api/cron/fluid-proposal",
+      "path": "/api/cron/fluid-proposal/sync",
       "schedule": "0 * * * *"
+    },
+    {
+      "path": "/api/cron/fluid-proposal/testFunction",
+      "schedule": "* * * * *"
     }
   ]
 }

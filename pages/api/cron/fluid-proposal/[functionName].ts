@@ -1,7 +1,6 @@
 import { ethers } from "ethers";
-import logger from "./logger";
-
-const ONE_HOUR = 60 * 60 * 1000;
+import logger from "../logger";
+import fluidProposalABI from "@/abi/fluid-proposal";
 
 import { env } from "~/env.mjs";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -30,14 +29,20 @@ if (!CONTRACT_ADDRESS) {
 const provider = ethers.getDefaultProvider(ETH_URI);
 const wallet = ethers.Wallet.fromMnemonic(MNEMONIC).connect(provider);
 
-async function callSync(
+async function call(
+  functionName: string,
   signer: ethers.Signer | undefined,
   fluidProposalsAddress: string | undefined
 ) {
+  if (!fluidProposalABI.includes(`function ${functionName}()`)) {
+    logger.error(`Contract's ABI doesn't have function ${functionName}`)
+    return false;
+  }
+
   // Run information
   logger.info(`Acting as ${wallet.address}`);
   logger.info(`Connected to ${ETH_URI}`);
-  logger.info(`Calling FluidProposals on ${CONTRACT_ADDRESS}`);
+  logger.info(`Calling ${functionName} on FluidProposals at ${CONTRACT_ADDRESS}`);
 
   if (!fluidProposalsAddress) {
     logger.error("Please set `CONTRACT_ADDRESS`.");
@@ -51,7 +56,7 @@ async function callSync(
 
   const fluidProposals = new ethers.Contract(
     fluidProposalsAddress,
-    ["function sync()"],
+    fluidProposalABI,
     signer
   );
 
@@ -84,17 +89,19 @@ async function callSync(
     };
   }
 
-  logger.info("Calling sync...");
+  logger.info(`Calling ${functionName}...`);
+
   try {
-    const tx = await fluidProposals.sync(OVERRIDES);
-    logger.info(`- Sent transaction to sync fluid proposals (${tx.hash})`);
+    const tx = await fluidProposals[functionName](OVERRIDES);
+
+    logger.info(`- Sent transaction to ${functionName} fluid proposals (${tx.hash})`);
     await tx.wait();
   } catch (err: any) {
     logger.fatal(`- Transaction failed to process.`);
     logger.fatal(`- ${err.message}`);
     return false;
   }
-  logger.info("Done calling sync.");
+  logger.info(`Done calling ${functionName}.`);
 
   const balance = await signer.provider?.getBalance(await signer.getAddress());
   logger.info(`Current balance is ${balance}`);
@@ -106,8 +113,15 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  logger.info("Starting sync...");
-  const status = await callSync(wallet, CONTRACT_ADDRESS);
+  const { functionName } = req.query;
+
+  if (!functionName) {
+    logger.error("Function Name is not set");
+    return false;
+  }
+
+  logger.info(`Starting ${functionName}...`);
+  const status = await call(functionName as string, wallet, CONTRACT_ADDRESS);
 
   const response = {
     status: status,
