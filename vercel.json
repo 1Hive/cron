@@ -6,7 +6,7 @@
       "schedule": "0 * * * *"
     },
     {
-      "path": "/api/cron/fluid-proposal/testFunction",
+      "path": "/api/cron/fluid-proposal/syncSupertoken",
       "schedule": "* * * * *"
     }
   ]

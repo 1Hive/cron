@@ -1,1 +1,1 @@
-export default ["function sync()", "function testFunction()"]
+export default ["function sync()", "function syncSupertoken()"]
