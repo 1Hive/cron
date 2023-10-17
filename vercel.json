@@ -3,11 +3,11 @@
   "crons": [
     {
       "path": "/api/cron/fluid-proposal/sync",
-      "schedule": "0 * * * *"
+      "schedule": "0 */6 * * *"
     },
     {
       "path": "/api/cron/fluid-proposal/syncSupertoken",
-      "schedule": "* * * * *"
+      "schedule": "0 0 */3 * *"
     }
   ]
 }
