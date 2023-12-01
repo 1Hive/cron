@@ -35,14 +35,16 @@ async function call(
   fluidProposalsAddress: string | undefined
 ) {
   if (!fluidProposalABI.includes(`function ${functionName}()`)) {
-    logger.error(`Contract's ABI doesn't have function ${functionName}`)
+    logger.error(`Contract's ABI doesn't have function ${functionName}`);
     return false;
   }
 
   // Run information
   logger.info(`Acting as ${wallet.address}`);
   logger.info(`Connected to ${ETH_URI}`);
-  logger.info(`Calling ${functionName} on FluidProposals at ${CONTRACT_ADDRESS}`);
+  logger.info(
+    `Calling ${functionName} on FluidProposals at ${CONTRACT_ADDRESS}`
+  );
 
   if (!fluidProposalsAddress) {
     logger.error("Please set `CONTRACT_ADDRESS`.");
@@ -94,7 +96,9 @@ async function call(
   try {
     const tx = await fluidProposals[functionName](OVERRIDES);
 
-    logger.info(`- Sent transaction to ${functionName} fluid proposals (${tx.hash})`);
+    logger.info(
+      `- Sent transaction to ${functionName} fluid proposals (${tx.hash})`
+    );
     await tx.wait();
   } catch (err: any) {
     logger.fatal(`- Transaction failed to process.`);
