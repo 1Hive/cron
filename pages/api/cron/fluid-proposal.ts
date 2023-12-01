@@ -51,7 +51,7 @@ async function callSync(
 
   const fluidProposals = new ethers.Contract(
     fluidProposalsAddress,
-    ["function sync()"],
+    ["function syncSupertoken()"],
     signer
   );
 
@@ -84,9 +84,9 @@ async function callSync(
     };
   }
 
-  logger.info("Calling sync...");
+  logger.info("Calling syncSupertoken...");
   try {
-    const tx = await fluidProposals.sync(OVERRIDES);
+    const tx = await fluidProposals.syncSupertoken(OVERRIDES);
     logger.info(`- Sent transaction to sync fluid proposals (${tx.hash})`);
     await tx.wait();
   } catch (err: any) {
